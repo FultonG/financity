@@ -3,8 +3,6 @@ import TeacherApp from './Apps/Teacher';
 import UnauthorizedApp from './Apps/Unauth';
 
 function App() {
-  // const [user, setUser] = useState({role: 'teacher'});
-  
   const [user, setUser] = useState(null);
   return (
     <>
@@ -15,7 +13,6 @@ function App() {
       <h1>student</h1>
     )}
     {user === null && (
-    //  <h1>unauth</h1>
       <UnauthorizedApp/>
     )}
     </>
