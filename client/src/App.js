@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import TeacherApp from './Apps/Teacher';
+import StudentApp from './Apps/Student';
 import UnauthorizedApp from './Apps/Unauth';
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
       <TeacherApp/>
     )}
     {user && user.role === 'student' && (
-      <h1>student</h1>
+      <StudentApp/>
     )}
     {user === null && (
       <UnauthorizedApp/>

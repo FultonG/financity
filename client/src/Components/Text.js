@@ -7,5 +7,18 @@ export const Bold = styled.p`
 `;
 
 export const Text = styled.p`
+font-weight: 500;
+font-size: 18px;
+line-height: 22px;
+text-align: center;
+
+color: #011F3B;
   margin: 0;
+`;
+
+export const Title = styled.p`
+font-weight: 600;
+font-size: 28px;
+color: #011F3B;
+
 `;
