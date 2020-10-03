@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TeacherApp from './Apps/Teacher';
-import UnauthorizedApp from './Apps/UnAuth';
+import UnauthorizedApp from './Apps/Unauth';
 
 function App() {
   // const [user, setUser] = useState({role: 'teacher'});
