@@ -302,7 +302,7 @@ router.post("/buy_stock", async (req, res) => {
     return res.status(400).send({ msg: "Invalid ticker symbol" });
   }
 
-  const price = quote.summaryDetail.previousClose;
+  const price = 400;
   const amountInvested = shares * price;
 
   const { err, findOneRes } = await student.findOne(
@@ -349,21 +349,17 @@ router.post("/buy_stock", async (req, res) => {
     const position = securities.find((position) => position.ticker == ticker);
     const { buyHistory, amountInvested: currAmountInvested } = position;
 
-    const { price: totalPrice } = buyHistory.reduce((total, addition) => ({
-      price: total.price * total.shares + addition.price * addition.shares,
-    }));
-
     const { shares: totalShares } = buyHistory.reduce((total, addition) => ({
       shares: total.shares + addition.shares,
     }));
 
-    console.log(totalPrice);
     console.log(totalShares);
     const avgPrice =
       (amountInvested + currAmountInvested) / (totalShares + shares);
     const { updateErr, updateRes } = await student.updateOne(
       { username, "securities.ticker": ticker },
       {
+        "securities.$.sold": false,
         "securities.$.price": avgPrice,
         $inc: {
           "securities.$.shares": shares,
@@ -520,6 +516,40 @@ router.post("/sell_stock", async (req, res) => {
   }
 
   return res.send(updateRes);
+});
+
+router.get("/stock_change/:username/:ticker", async (req, res) => {
+  const username = req.params.username;
+  const ticker = req.params.ticker;
+
+  try {
+    var quote = await yahooFinance.quote({
+      symbol: ticker,
+      modules: ["summaryDetail"],
+    });
+  } catch {
+    return res.status(400).send({ msg: "Invalid ticker symbol" });
+  }
+
+  const price = quote.summaryDetail.previousClose;
+
+  const { err, findOneRes } = await student.findOne(
+    { username, "securities.ticker": ticker },
+    { _id: 0, __v: 0 }
+  );
+  if (err) {
+    const { statusCode, msg } = general.getStatus(err);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const positions = findOneRes.securities;
+  const position = positions.find((position) => position.ticker === ticker);
+  const { amountInvested, shares } = position;
+
+  const change = (shares * price) / amountInvested;
+  const percentChange = change > 1 ? (change - 1) * 100 : (1 - change) * -100;
+  const percentChangeStr = String(percentChange) + "%";
+  return res.send({ percentChange: percentChangeStr });
 });
 
 module.exports = router;

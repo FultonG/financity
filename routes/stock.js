@@ -36,4 +36,32 @@ router.get("/history/:ticker/:from/:to", async (req, res) => {
   }
 });
 
+router.get("/info/:ticker", async (req, res) => {
+  const ticker = req.params.ticker;
+
+  try {
+    const info = await yahooFinance.snapshot({
+      symbol: ticker,
+      fields: ["s", "n", "o", "p"],
+    });
+
+    return res.send(info);
+  } catch (err) {
+    return res.status(500).send({ err });
+  }
+});
+
+router.get("/default", async (req, res) => {
+  try {
+    const info = await yahooFinance.snapshot({
+      symbols: ["TSLA", "AMZN", "NFLX", "MSFT", "V", "NKE"],
+      fields: ["s", "n", "o", "p"],
+    });
+
+    return res.send(info);
+  } catch (err) {
+    return res.status(500).send({ err });
+  }
+});
+
 module.exports = router;
