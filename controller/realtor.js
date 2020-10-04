@@ -66,18 +66,36 @@ async function getHouse(data) {
 
       const property = properties[0];
 
-      let { description, address, price, baths, beds, thumbnail } = property;
+      let {
+        description,
+        address,
+        price,
+        baths,
+        beds,
+        thumbnail,
+        mortgage,
+      } = property;
       if (!thumbnail) {
         thumbnail =
           "https://vcunited.club/wp-content/uploads/2020/01/No-image-available-2.jpg";
       }
+
+      const monthly_expense = mortgage.estimate.monthly_payment;
 
       const { city, line, state_code, state } = address;
       address = { city, line, state_code, state };
 
       return {
         houseErr: null,
-        houseRes: { description, address, price, baths, beds, thumbnail },
+        houseRes: {
+          description,
+          address,
+          price,
+          baths,
+          beds,
+          thumbnail,
+          monthly_expense,
+        },
       };
     })
     .catch((err) => {

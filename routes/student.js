@@ -7,6 +7,7 @@ const {
   realtor,
 } = require("../controller");
 const router = require("express").Router();
+const yahooFinance = require("yahoo-finance");
 
 router.get("/get/:username", async (req, res) => {
   const username = req.params.username;
@@ -63,7 +64,7 @@ router.post("/login", async (req, res) => {
 
   if (truePwd) {
     const token = general.createJwt(user);
-    return res.send({ user, token });
+    return res.send({ ...user, token });
   }
   return res.status(400).send({ msg: "Incorrect password" });
 });
@@ -238,6 +239,7 @@ router.get("/new_job/:username", async (req, res) => {
 });
 
 router.post("/buy_house", async (req, res) => {
+  const username = req.body.username;
   const property_id = req.body.property_id;
 
   const { houseErr, houseRes } = await realtor.getHouse(property_id);
@@ -246,7 +248,245 @@ router.post("/buy_house", async (req, res) => {
     return res.status(statusCode).send({ msg });
   }
 
-  return res.send(houseRes);
+  const { price, monthly_expense } = houseRes;
+
+  const { err, findOneRes } = await student.findOne(
+    { username },
+    { _id: 0, __v: 0 }
+  );
+  if (err) {
+    const { statusCode, msg } = general.getStatus(err);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { account } = findOneRes;
+  const { balance } = account;
+
+  if (price > balance) {
+    return res.status(400).send({ msg: "Insufficient funds" });
+  }
+
+  const { purchaseErr } = await finance.purchase({
+    account_id: account._id,
+    medium: "balance",
+    amount: price,
+  });
+  if (purchaseErr) {
+    const { statusCode, msg } = general.getStatus(purchaseErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { updateErr, updateRes } = await student.updateOne(
+    { username },
+    { house: houseRes, $inc: { expenses: monthly_expense } }
+  );
+  if (updateErr) {
+    const { statusCode, msg } = general.getStatus(updateErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  return res.send(updateRes);
+});
+
+router.post("/buy_stock", async (req, res) => {
+  const username = req.body.username;
+  const ticker = req.body.ticker;
+  const shares = req.body.shares;
+
+  try {
+    var quote = await yahooFinance.quote({
+      symbol: ticker,
+      modules: ["summaryDetail"],
+    });
+  } catch {
+    return res.status(400).send({ msg: "Invalid ticker symbol" });
+  }
+
+  const price = quote.summaryDetail.previousClose;
+  const amountInvested = shares * price;
+
+  const { err, findOneRes } = await student.findOne(
+    { username },
+    { _id: 0, __v: 0 }
+  );
+  if (err) {
+    const { statusCode, msg } = general.getStatus(err);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { account, securities } = findOneRes;
+  const { balance } = account;
+
+  if (amountInvested > balance) {
+    return res.status(400).send({ msg: "Insufficient funds" });
+  }
+
+  const { purchaseErr } = await finance.purchase({
+    account_id: account._id,
+    medium: "balance",
+    amount: amountInvested,
+  });
+  if (purchaseErr) {
+    const { statusCode, msg } = general.getStatus(purchaseErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const positionExists = securities.find(
+    (position) => position.ticker == ticker
+  );
+
+  if (positionExists) {
+    const { err, findOneRes } = await student.findOne(
+      { username, "securities.ticker": ticker },
+      { _id: 0 }
+    );
+    if (err) {
+      const { statusCode, msg } = general.getStatus(err);
+      return res.status(statusCode).send({ msg });
+    }
+
+    const { securities } = findOneRes;
+    const position = securities.find((position) => position.ticker == ticker);
+    const { buyHistory, amountInvested: currAmountInvested } = position;
+
+    const { price: totalPrice } = buyHistory.reduce((total, addition) => ({
+      price: total.price * total.shares + addition.price * addition.shares,
+    }));
+
+    const { shares: totalShares } = buyHistory.reduce((total, addition) => ({
+      shares: total.shares + addition.shares,
+    }));
+
+    console.log(totalPrice);
+    console.log(totalShares);
+    const avgPrice =
+      (amountInvested + currAmountInvested) / (totalShares + shares);
+    const { updateErr, updateRes } = await student.updateOne(
+      { username, "securities.ticker": ticker },
+      {
+        "securities.$.price": avgPrice,
+        $inc: {
+          "securities.$.shares": shares,
+          "securities.$.amountInvested": amountInvested,
+        },
+        $push: {
+          "securities.$.buyHistory": {
+            dateBought: new Date(),
+            price,
+            shares,
+          },
+        },
+      }
+    );
+    if (updateErr) {
+      const { statusCode, msg } = general.getStatus(updateErr);
+      return res.status(statusCode).send({ msg });
+    }
+
+    return res.send(updateRes);
+  } else {
+    const { updateErr, updateRes } = await student.updateOne(
+      { username },
+      {
+        $push: {
+          securities: {
+            ticker,
+            price,
+            amountInvested,
+            shares,
+            buyHistory: [
+              {
+                dateBought: new Date(),
+                price,
+                shares,
+              },
+            ],
+            sellHistory: [],
+            sold: false,
+          },
+        },
+      }
+    );
+    if (updateErr) {
+      const { statusCode, msg } = general.getStatus(updateErr);
+      return res.status(statusCode).send({ msg });
+    }
+
+    return res.send(updateRes);
+  }
+});
+
+router.post("/sell_stock", async (req, res) => {
+  const username = req.body.username;
+  const ticker = req.body.ticker;
+  const sellShares = req.body.shares;
+
+  const { err, findOneRes } = await student.findOne(
+    { username },
+    { _id: 0, __v: 0 }
+  );
+  if (err) {
+    const { statusCode, msg } = general.getStatus(err);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { securities, account } = findOneRes;
+  const holdsTicker = securities.some((position) => position.ticker == ticker);
+
+  if (!holdsTicker) {
+    return res.status(400).send({ msg: "You do not own this ticker symbol" });
+  }
+
+  try {
+    var quote = await yahooFinance.quote({
+      symbol: ticker,
+      modules: ["summaryDetail"],
+    });
+  } catch {
+    return res.status(400).send({ msg: "Invalid ticker symbol" });
+  }
+
+  const price = quote.summaryDetail.previousClose;
+
+  const position = securities.find((position) => position.ticker == ticker);
+  const { shares: heldShares } = position;
+  if (sellShares > heldShares) {
+    return res
+      .status(400)
+      .send({ msg: `You own less than ${sellShares} shares` });
+  }
+
+  const { updateErr, updateRes } = await student.updateOne(
+    { username, "securities.ticker": ticker },
+    {
+      "securities.$.sold": sellShares === heldShares,
+      $inc: { "securities.$.shares": -sellShares },
+      $push: {
+        "securities.$.sellHistory": {
+          dateSold: new Date(),
+          price,
+          shares: sellShares,
+        },
+      },
+    }
+  );
+  if (updateErr) {
+    const { statusCode, msg } = general.getStatus(updateErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const totalSell = sellShares * price;
+  const { depositErr } = finance.deposit({
+    account_id: account._id,
+    medium: "balance",
+    amount: totalSell,
+  });
+  if (depositErr) {
+    const { statusCode, msg } = general.getStatus(depositErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  return res.send(updateRes);
 });
 
 module.exports = router;
