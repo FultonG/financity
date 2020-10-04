@@ -21,7 +21,7 @@ const StudentApp = (props) => {
               <StudentDashboard {...props}/>
             </Route>
             <Route exact path="/careers">
-              <Careers />
+              <Careers {...props} />
             </Route>
             <Route >
               <Redirect to="/" />

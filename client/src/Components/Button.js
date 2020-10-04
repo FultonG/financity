@@ -14,6 +14,7 @@ const Button = styled.button`
   }
   &:hover {
     border: none;
+    cursor: pointer;
   }
   &:disabled {
     background: #012e3b4a;

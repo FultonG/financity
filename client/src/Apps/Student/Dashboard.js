@@ -10,6 +10,8 @@ import CashVector from '../../images/Cash.svg';
 import CareerCard from './Components/CareerCard';
 import Search from '../../images/search.svg';
 import API from './utils/API';
+import Button from '../../Components/Button';
+import {useHistory} from 'react-router-dom';
 
 const Icon = styled.img`
   height: 100%;
@@ -21,16 +23,9 @@ const Row = styled(Container)`
   width: 60%;
 `;
 
-const career = {
-  img: 'https://fultongarcia.com/Developer.svg',
-  title: 'Software Engineer',
-  description: 'Software engineering is a field of engineering, for designing and writing programs for computers or other electronic devices. A software engineer, or programmer, writes software (or changes existing software) and compiles software using methods that improve it. Better quality software is easier to use.',
-  minSalary: 70000,
-  maxSalary: 80000,
-  role: "entry"
-}
 
 const StudentDashboard = ({ user }) => {
+  let history = useHistory();
   const [userInformation, setUserInformation] = useState(user.user);
   useEffect(() => {
     const fetcUserInformation = async () => {
@@ -42,6 +37,10 @@ const StudentDashboard = ({ user }) => {
 
     fetcUserInformation()
   }, [])
+
+  const handleRedirect = () => {
+    history.push('/careers');
+  }
   return (
     <Container direction="column" padding="30px" width="90%">
       <Title>Hello, {userInformation.first_name}!</Title>
@@ -97,10 +96,11 @@ const StudentDashboard = ({ user }) => {
         </Container>
         <Container width="40%" padding="40px">
           {userInformation.job ? <CareerCard {...userInformation.job} ></CareerCard> : (
-            <Card direction="column" align="center" hover>
+            <Card direction="column" align="center" justify="space-evenly" hover>
               <Text>Hey!</Text>
               <img style={{width: '80%'}} src={Search} />
               <Description>Looks like you don't have a career yet, head over to the 'Careers' tab to learn more about some awesome jobs and choose the right fit for you.</Description>
+              <Button onClick={handleRedirect}>Go to Careers</Button>
             </Card>
           )}
         </Container>
