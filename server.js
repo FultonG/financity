@@ -3,7 +3,18 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
-const { student, teacher } = require("./routes");
+const {
+  student,
+  teacher,
+  account,
+  deposit,
+  purchase,
+  customer,
+  realtor,
+  class_,
+  job,
+  question,
+} = require("./routes");
 const db = require("./db/db");
 
 const PORT = process.env.PORT || 3001;
@@ -20,6 +31,14 @@ app.use(bodyParser.json());
 
 app.use("/student", student);
 app.use("/teacher", teacher);
+app.use("/account", account);
+app.use("/deposit", deposit);
+app.use("/purchase", purchase);
+app.use("/customer", customer);
+app.use("/realtor", realtor);
+app.use("/class", class_);
+app.use("/job", job);
+app.use("/question", question);
 
 app.get("/", (req, res) => {
   res.send({ msg: "Default endpoint" });
