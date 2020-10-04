@@ -1,4 +1,4 @@
-const { teacher, general } = require("../controller");
+const { teacher, general, class_, task, student } = require("../controller");
 const router = require("express").Router();
 
 router.get("/get/:username", async (req, res) => {
@@ -97,6 +97,63 @@ router.post("/login", async (req, res) => {
     return res.send({ user, token });
   }
   return res.status(400).send({ msg: "Incorrect password" });
+});
+
+router.post("/send_event/:class_code", async (req, res) => {
+  const code = req.params.class_code;
+
+  const { classErr, classRes } = await class_.findOne(
+    { code },
+    { _id: 0, __v: 0 }
+  );
+  if (classErr) {
+    const { statusCode, msg } = general.getStatus(classErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { students } = classRes;
+  students.forEach(async (currStudent) => {
+    const { taskErr, taskRes } = await task.findOne(
+      { name: "all_tasks" },
+      { _id: 0, tasks: 1 }
+    );
+    if (taskErr) {
+      const { statusCode, msg } = general.getStatus(taskErr);
+      return res.status(statusCode).send({ msg });
+    }
+
+    const { tasks } = taskRes;
+    const index = Math.floor(Math.random() * tasks.length);
+    const randomTask = tasks[index];
+    const { requirements, event, amount } = randomTask;
+
+    if (requirements.includes("house")) {
+      if (!currStudent.house) {
+        var choosenEvent = {
+          event: "You got in an accident and had to pay $500 dollars",
+          amount: 500,
+        };
+      } else {
+        if (currStudent.house.price < 150000) {
+          var choosenEvent = { event, amount: amount * 1.5 };
+        } else {
+          var choosenEvent = { event, amount };
+        }
+      }
+    } else {
+      var choosenEvent = { event, amount };
+    }
+
+    const { err, findOneRes } = student.updateOne(
+      { username: currStudent.username },
+      { event: choosenEvent }
+    );
+    if (err) {
+      const { statusCode, msg } = general.getStatus(err);
+      return res.status(statusCode).send({ msg });
+    }
+  });
+  return res.send({ msg: "Events sent" });
 });
 
 module.exports = router;

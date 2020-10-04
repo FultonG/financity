@@ -40,8 +40,13 @@ async function house(data) {
   let response = [];
   const { properties } = houseRes;
   for (const property in properties) {
-    const { beds, baths, price, address, thumbnail } = properties[property];
-    response = [...response, { beds, baths, price, address, thumbnail }];
+    const { beds, baths, price, address, thumbnail, property_id } = properties[
+      property
+    ];
+    response = [
+      ...response,
+      { beds, baths, price, address, thumbnail, property_id },
+    ];
   }
   return { houseErr, houseRes: response };
 }

@@ -107,7 +107,7 @@ router.post("/complete_question", async (req, res) => {
 
   const { err: findOneErr, findOneRes } = await student.findOne(
     { username },
-    { _id: 0, questions_solved: 1, account: 1 }
+    { _id: 0, __v: 0 }
   );
   if (findOneErr) {
     const { statusCode, msg } = general.getStatus(findOneErr);
@@ -302,7 +302,7 @@ router.post("/buy_stock", async (req, res) => {
     return res.status(400).send({ msg: "Invalid ticker symbol" });
   }
 
-  const price = quote.summaryDetail.previousClose;
+  const price = 400;
   const amountInvested = shares * price;
 
   const { err, findOneRes } = await student.findOne(
@@ -349,21 +349,17 @@ router.post("/buy_stock", async (req, res) => {
     const position = securities.find((position) => position.ticker == ticker);
     const { buyHistory, amountInvested: currAmountInvested } = position;
 
-    const { price: totalPrice } = buyHistory.reduce((total, addition) => ({
-      price: total.price * total.shares + addition.price * addition.shares,
-    }));
-
     const { shares: totalShares } = buyHistory.reduce((total, addition) => ({
       shares: total.shares + addition.shares,
     }));
 
-    console.log(totalPrice);
     console.log(totalShares);
     const avgPrice =
       (amountInvested + currAmountInvested) / (totalShares + shares);
     const { updateErr, updateRes } = await student.updateOne(
       { username, "securities.ticker": ticker },
       {
+        "securities.$.sold": false,
         "securities.$.price": avgPrice,
         $inc: {
           "securities.$.shares": shares,
@@ -447,20 +443,54 @@ router.post("/sell_stock", async (req, res) => {
   }
 
   const price = quote.summaryDetail.previousClose;
+  let amountSelling = price * sellShares;
 
   const position = securities.find((position) => position.ticker == ticker);
-  const { shares: heldShares } = position;
+  let { shares: heldShares, amountInvested, price: currPrice } = position;
   if (sellShares > heldShares) {
     return res
       .status(400)
       .send({ msg: `You own less than ${sellShares} shares` });
   }
 
+  if (sellShares === heldShares) {
+    const leftover = amountInvested - amountSelling;
+    if (leftover > 0) {
+      const { depositErr } = finance.purchase({
+        account_id: account._id,
+        medium: "balance",
+        amount: leftover,
+      });
+      if (depositErr) {
+        const { statusCode, msg } = general.getStatus(depositErr);
+        return res.status(statusCode).send({ msg });
+      }
+
+      (currPrice = 0), (amountSelling = amountInvested);
+    } else {
+      const { depositErr } = finance.deposit({
+        account_id: account._id,
+        medium: "balance",
+        amount: leftover,
+      });
+      if (depositErr) {
+        const { statusCode, msg } = general.getStatus(depositErr);
+        return res.status(statusCode).send({ msg });
+      }
+
+      (currPrice = 0), (amountSelling = amountInvested);
+    }
+  }
+
   const { updateErr, updateRes } = await student.updateOne(
     { username, "securities.ticker": ticker },
     {
+      "securities.$.price": currPrice,
       "securities.$.sold": sellShares === heldShares,
-      $inc: { "securities.$.shares": -sellShares },
+      $inc: {
+        "securities.$.shares": -sellShares,
+        "securities.$.amountInvested": -amountSelling,
+      },
       $push: {
         "securities.$.sellHistory": {
           dateSold: new Date(),
@@ -475,11 +505,10 @@ router.post("/sell_stock", async (req, res) => {
     return res.status(statusCode).send({ msg });
   }
 
-  const totalSell = sellShares * price;
   const { depositErr } = finance.deposit({
     account_id: account._id,
     medium: "balance",
-    amount: totalSell,
+    amount: amountSelling,
   });
   if (depositErr) {
     const { statusCode, msg } = general.getStatus(depositErr);
@@ -487,6 +516,40 @@ router.post("/sell_stock", async (req, res) => {
   }
 
   return res.send(updateRes);
+});
+
+router.get("/stock_change/:username/:ticker", async (req, res) => {
+  const username = req.params.username;
+  const ticker = req.params.ticker;
+
+  try {
+    var quote = await yahooFinance.quote({
+      symbol: ticker,
+      modules: ["summaryDetail"],
+    });
+  } catch {
+    return res.status(400).send({ msg: "Invalid ticker symbol" });
+  }
+
+  const price = quote.summaryDetail.previousClose;
+
+  const { err, findOneRes } = await student.findOne(
+    { username, "securities.ticker": ticker },
+    { _id: 0, __v: 0 }
+  );
+  if (err) {
+    const { statusCode, msg } = general.getStatus(err);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const positions = findOneRes.securities;
+  const position = positions.find((position) => position.ticker === ticker);
+  const { amountInvested, shares } = position;
+
+  const change = (shares * price) / amountInvested;
+  const percentChange = change > 1 ? (change - 1) * 100 : (1 - change) * -100;
+  const percentChangeStr = String(percentChange) + "%";
+  return res.send({ percentChange: percentChangeStr });
 });
 
 module.exports = router;

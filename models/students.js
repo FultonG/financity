@@ -36,6 +36,7 @@ const StudentSchema = mongoose.Schema({
   house: { type: Object, required: false },
   expenses: { type: Number, required: false },
   securities: { type: Array, required: false },
+  event: { type: Object, required: false },
 });
 
 const Student = (module.exports = mongoose.model(
