@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../../Components/Container';
 import Card from '../../Components/Card';
-import { Text, Title } from '../../Components/Text';
+import { Text, Title, Description } from '../../Components/Text';
 import WalletVector from '../../images/wallet.svg';
 import DebtVector from '../../images/debt.svg';
 import ProfitVector from '../../images/profits.svg';
 import styled from 'styled-components';
 import CashVector from '../../images/Cash.svg';
-import Developer from '../../images/Developer.svg';
 import CareerCard from './Components/CareerCard';
+import Search from '../../images/search.svg';
+import API from './utils/API';
 
 const Icon = styled.img`
   height: 100%;
@@ -29,10 +30,21 @@ const career = {
   role: "entry"
 }
 
-const StudentDashboard = () => {
+const StudentDashboard = ({ user }) => {
+  const [userInformation, setUserInformation] = useState(user.user);
+  useEffect(() => {
+    const fetcUserInformation = async () => {
+      let res = await API.getUserInformation(user.user.username);
+      console.log(res.data);
+      setUserInformation(res.data);
+
+    }
+
+    fetcUserInformation()
+  }, [])
   return (
     <Container direction="column" padding="30px" width="90%">
-      <Title>Hello, Student!</Title>
+      <Title>Hello, {userInformation.first_name}!</Title>
       <Container>
         <Container width="60%" direction="column">
           <Container height="40%" justify="space-between" padding="40px">
@@ -43,9 +55,7 @@ const StudentDashboard = () => {
                   <Text>Cash:</Text>
                 </Row>
                 <Container width="40%" justify="center" align="center">
-                  <Text>
-                    $500
-              </Text>
+                  <Text>${userInformation.account?.balance}</Text>
                 </Container>
               </Container>
               <Container height="20%" margin="10px 0px">
@@ -86,7 +96,13 @@ const StudentDashboard = () => {
           </Container>
         </Container>
         <Container width="40%" padding="40px">
-          <CareerCard {...career} ></CareerCard>
+          {userInformation.job ? <CareerCard {...userInformation.job} ></CareerCard> : (
+            <Card direction="column" align="center" hover>
+              <Text>Hey!</Text>
+              <img style={{width: '80%'}} src={Search} />
+              <Description>Looks like you don't have a career yet, head over to the 'Careers' tab to learn more about some awesome jobs and choose the right fit for you.</Description>
+            </Card>
+          )}
         </Container>
       </Container>
     </Container>

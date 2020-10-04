@@ -22,3 +22,10 @@ font-size: 28px;
 color: #011F3B;
 
 `;
+
+export const Description = styled(Text)`
+  font-size: 16px;
+  font-weight: 200;
+  text-align: left;
+  width: 80%;
+`;

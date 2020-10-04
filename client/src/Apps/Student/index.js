@@ -6,12 +6,11 @@ import Logo from '../../images/logo.svg';
 import StudentDashboard from './Dashboard';
 import componentsIcon from '../../icons/components.svg';
 import folderIcon from '../../icons/folder.svg';
-import analyticsIcon from '../../icons/analytics.svg';
 import settingsIcon from '../../icons/settings.svg';
 import AnimatedIcon from '../../Components/AnimatedIcon'
 import Careers from './Careers';
 
-const StudentApp = () => {
+const StudentApp = (props) => {
   return (
     <Router>
       <Container>
@@ -19,7 +18,7 @@ const StudentApp = () => {
         <Container width="85%">
           <Switch>
             <Route exact path="/">
-              <StudentDashboard />
+              <StudentDashboard {...props}/>
             </Route>
             <Route exact path="/careers">
               <Careers />
