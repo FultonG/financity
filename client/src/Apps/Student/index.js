@@ -9,9 +9,11 @@ import folderIcon from '../../icons/folder.svg';
 import settingsIcon from '../../icons/settings.svg';
 import questionsIcon from '../../icons/question.svg';
 import house from '../../icons/house.svg';
+import analyticsIcon from '../../icons/analytics.svg';
 import AnimatedIcon from '../../Components/AnimatedIcon'
 import Careers from './Careers';
 import RealEstate from './RealEstate';
+import Stocks from './Stocks';
 
 import Questions from './Questions';
 const StudentApp = (props) => {
@@ -29,6 +31,9 @@ const StudentApp = (props) => {
             </Route>
             <Route exact path="/real_estate">
               <RealEstate {...props} />
+            </Route>
+            <Route exact path="/stocks">
+              <Stocks {...props}/>
             </Route>
             <Route exact path="/questions">
               <Questions {...props}/>
@@ -58,6 +63,11 @@ const NavItems = [
     text: 'Real Estate',
     link: '/real_estate',
     icon: <AnimatedIcon file={house} id="real-estate-link" duration={300} />
+  },
+  {
+    text: 'Stocks',
+    link: '/stocks',
+    icon: <AnimatedIcon file={analyticsIcon} id="stocks-link" duration={300} />
   },
   {
     text: 'Questions',
