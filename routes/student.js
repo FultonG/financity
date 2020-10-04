@@ -447,20 +447,54 @@ router.post("/sell_stock", async (req, res) => {
   }
 
   const price = quote.summaryDetail.previousClose;
+  let amountSelling = price * sellShares;
 
   const position = securities.find((position) => position.ticker == ticker);
-  const { shares: heldShares } = position;
+  let { shares: heldShares, amountInvested, price: currPrice } = position;
   if (sellShares > heldShares) {
     return res
       .status(400)
       .send({ msg: `You own less than ${sellShares} shares` });
   }
 
+  if (sellShares === heldShares) {
+    const leftover = amountInvested - amountSelling;
+    if (leftover > 0) {
+      const { depositErr } = finance.purchase({
+        account_id: account._id,
+        medium: "balance",
+        amount: leftover,
+      });
+      if (depositErr) {
+        const { statusCode, msg } = general.getStatus(depositErr);
+        return res.status(statusCode).send({ msg });
+      }
+
+      (currPrice = 0), (amountSelling = amountInvested);
+    } else {
+      const { depositErr } = finance.deposit({
+        account_id: account._id,
+        medium: "balance",
+        amount: leftover,
+      });
+      if (depositErr) {
+        const { statusCode, msg } = general.getStatus(depositErr);
+        return res.status(statusCode).send({ msg });
+      }
+
+      (currPrice = 0), (amountSelling = amountInvested);
+    }
+  }
+
   const { updateErr, updateRes } = await student.updateOne(
     { username, "securities.ticker": ticker },
     {
+      "securities.$.price": currPrice,
       "securities.$.sold": sellShares === heldShares,
-      $inc: { "securities.$.shares": -sellShares },
+      $inc: {
+        "securities.$.shares": -sellShares,
+        "securities.$.amountInvested": -amountSelling,
+      },
       $push: {
         "securities.$.sellHistory": {
           dateSold: new Date(),
@@ -475,11 +509,10 @@ router.post("/sell_stock", async (req, res) => {
     return res.status(statusCode).send({ msg });
   }
 
-  const totalSell = sellShares * price;
   const { depositErr } = finance.deposit({
     account_id: account._id,
     medium: "balance",
-    amount: totalSell,
+    amount: amountSelling,
   });
   if (depositErr) {
     const { statusCode, msg } = general.getStatus(depositErr);
