@@ -15,7 +15,7 @@ function App() {
       <TeacherApp/>
     )}
     {user && user.role === 'student' && (
-      <StudentApp user={user}/>
+      <StudentApp user={user.user}/>
     )}
     {user === null && (
       <UnauthorizedApp setUser={setUser}/>

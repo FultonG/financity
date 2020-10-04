@@ -11,7 +11,6 @@ const AnimatedIcon = ({ file, id, duration=300, hovered, show, backwards}) => {
   const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    console.log(show)
     if (hovered && vivus !== null && finished) {
       vivus.stop().reset().play(backwards ? -1 : 1);
       setFinished(false);

@@ -33,10 +33,11 @@ const Stocks = ({ user }) => {
             let before = moment().subtract(1, 'month').format('YYYY-MM-DD');
             
             let { data } = await API.getStockHistoricalData(stockData.symbol, before, now);
-            stockData.historical = data;
+            stockData.historical = data.map(datum => {
+              return {...datum, close: Math.floor(datum.close)}
+            }).reverse();
             newStocks.push(stockData);
         }
-        console.log(newStocks)
         setStocks(newStocks);
     }
 
