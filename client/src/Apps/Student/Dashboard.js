@@ -10,7 +10,13 @@ import CashVector from '../../images/Cash.svg';
 import Developer from '../../images/Developer.svg';
 
 const Icon = styled.img`
-  height: 100%
+  height: 100%;
+  margin-right: 20px;
+`;
+
+const Row = styled(Container)`
+  border-right: 2px solid #8ED275;
+  margin: 10px 0px;
 `;
 
 const StudentDashboard = () => {
@@ -21,31 +27,19 @@ const StudentDashboard = () => {
         <Container width="60%" direction="column">
           <Container height="40%" justify="space-between" padding="40px">
             <Card width="45%" direction="column" align="start" padding="15px" hover>
-              <Container height="33%" width="40%" align="baseline">
+              <Row height="20%" width="60%" align="center">
                 <Icon src={WalletVector} />
                 <Text>Cash:</Text>
-              </Container>
-              <Container height="33%" width="40%" align="baseline">
+              </Row>
+              <Row height="20%" width="60%" align="center">
                 <Icon src={DebtVector} />
                 <Text>Debt:</Text>
                 
-              </Container>
-              <Container height="33%" width="40%" align="baseline">
+              </Row>
+              <Row height="20%" width="60%" align="center">
                 <Icon src={ProfitVector} />
                 <Text>Investments:</Text>
-              </Container>
-
-              <Container height="33%" width="10%" align="baseline" padding="30px" direction="row" margin-bottom="10px" border-right="2px solid #8ED275d" > 
-                <Text>$500</Text>
-              </Container>
-
-              <Container height="33%" width="10%" align="baseline" padding="30px" direction="row" margin-bottom="10px"> 
-                <Text>$50</Text>
-              </Container>
-
-              <Container height="33%" width="10%" align="baseline" padding="30px" direction="row" margin-bottom="10px"> 
-                <Text>$25</Text>
-              </Container>
+              </Row>
 
             </Card>
             <Card width="45%" direction="row" align="start" padding="40px" hover>
