@@ -7,7 +7,7 @@ const Icon = styled.img`
   width: 80%;
 `;
 
-const CareerCard = ({ image, width, title, description, minSalary, maxSalary, role, cursor }) => {
+const CareerCard = ({ image, width, title, description, minSalary, maxSalary, role, cursor, onClick }) => {
   var formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -15,7 +15,7 @@ const CareerCard = ({ image, width, title, description, minSalary, maxSalary, ro
   });
 
   return (
-    <Card width={width} direction="column" justify="space-evenly" align="center" hover cursor={cursor}>
+    <Card width={width} direction="column" justify="space-evenly" align="center" hover cursor={cursor} onClick={onClick}>
       <Text>{title}</Text>
       <Icon src={image} />
       <Description>{description}</Description>
