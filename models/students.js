@@ -5,17 +5,6 @@ mongoose.set("useNewUrlParser", true);
 mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
 
-const SolvedQuestionsSchema = mongoose.Schema({
-  question_id: {
-    type: String,
-    required: [true, "Please provide a question id"],
-  },
-  date_completed: {
-    type: String,
-    required: [true, "Please provide the date the question was completed"],
-  },
-});
-
 const StudentSchema = mongoose.Schema({
   username: {
     type: String,
@@ -39,7 +28,7 @@ const StudentSchema = mongoose.Schema({
     required: [true, "Please provide a classroom ID"],
   },
   job: { type: schema, required: false },
-  questions_solved: { type: Array(SolvedQuestionsSchema), required: false },
+  questions_solved: { type: Array, required: false },
   solved: { type: Number, default: 0, required: false },
   question: { type: String, required: false },
   goal: { type: Number, default: 5, required: false },
