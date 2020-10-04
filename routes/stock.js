@@ -9,8 +9,23 @@ router.get("/ticker/:ticker", async (req, res) => {
       symbol: ticker,
       modules: ["summaryDetail"],
     });
+    const {
+      previousClose,
+      open,
+      dayLow,
+      dayHigh,
+      volume,
+      marketCap,
+    } = quote.summaryDetail;
 
-    return res.send(quote);
+    return res.send({
+      previousClose,
+      open,
+      dayLow,
+      dayHigh,
+      volume,
+      marketCap,
+    });
   } catch (err) {
     return res.status(500).send({ err });
   }
@@ -42,11 +57,18 @@ router.get("/info/:ticker", async (req, res) => {
   try {
     const info = await yahooFinance.snapshot({
       symbol: ticker,
-      fields: ["s", "n", "o", "p"],
+      fields: ["s", "n", "o", "p", "y", "g", "h"],
+    });
+    const quote = await yahooFinance.quote({
+      symbol: ticker,
+      modules: ["summaryDetail"],
     });
 
-    return res.send(info);
+    const { volume, marketCap } = quote.summaryDetail;
+
+    return res.send({ ...info, volume, marketCap });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({ err });
   }
 });

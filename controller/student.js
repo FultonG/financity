@@ -75,7 +75,7 @@ async function create(data) {
 async function findOne(data, filter) {
   let res = {};
   try {
-    let findOneRes = await Student.findOne(data).select({ filter });
+    let findOneRes = await Student.findOne(data).select(filter);
     if (!findOneRes) {
       throw new Error("Username not in database");
     }
