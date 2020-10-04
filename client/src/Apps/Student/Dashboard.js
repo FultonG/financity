@@ -16,7 +16,7 @@ const Icon = styled.img`
 
 const Row = styled(Container)`
   border-right: 2px solid #8ED275;
-  margin: 10px 0px;
+  width: 60%;
 `;
 
 const StudentDashboard = () => {
@@ -27,19 +27,39 @@ const StudentDashboard = () => {
         <Container width="60%" direction="column">
           <Container height="40%" justify="space-between" padding="40px">
             <Card width="45%" direction="column" align="start" padding="15px" hover>
-              <Row height="20%" width="60%" align="center">
-                <Icon src={WalletVector} />
-                <Text>Cash:</Text>
-              </Row>
-              <Row height="20%" width="60%" align="center">
-                <Icon src={DebtVector} />
-                <Text>Debt:</Text>
-                
-              </Row>
-              <Row height="20%" width="60%" align="center">
-                <Icon src={ProfitVector} />
-                <Text>Investments:</Text>
-              </Row>
+              <Container height="20%" margin="10px 0px">
+                <Row align="center">
+                  <Icon src={WalletVector} />
+                  <Text>Cash:</Text>
+                </Row>
+                <Container width="40%" justify="center" align="center">
+                  <Text>
+                    $500
+              </Text>
+                </Container>
+              </Container>
+              <Container height="20%" margin="10px 0px">
+                <Row align="center">
+                  <Icon src={DebtVector} />
+                  <Text>Debt:</Text>
+                </Row>
+                <Container width="40%" justify="center" align="center">
+                  <Text>
+                    $25
+              </Text>
+                </Container>
+              </Container>
+              <Container height="20%" margin="10px 0px">
+                <Row align="center">
+                  <Icon src={ProfitVector} />
+                  <Text>Investments:</Text>
+                </Row>
+                <Container width="40%" justify="center" align="center">
+                  <Text>
+                    $50
+              </Text>
+                </Container>
+              </Container>
 
             </Card>
             <Card width="45%" direction="row" align="start" padding="40px" hover>
@@ -51,24 +71,24 @@ const StudentDashboard = () => {
           </Container>
           <Container padding="40px">
             <Card hover>
-              
+
             </Card>
           </Container>
         </Container>
         <Container padding="40px" width="40%">
-        <Card direction="row" align="start" hover>
-          <Container height="10%" justify="center" padding="40px">
-            <Text>Software Developer</Text>
-          </Container>
-          <Container justify="center" direction="column" height="40%" margin="40px">
-            <Icon src={Developer} />
-            <Text>Student Name: Student Name</Text>
-            <Text>Salary: $75,000 </Text>
-            <Text>Expenses: </Text>
-          </Container>
-        </Card>
+          <Card direction="row" align="start" hover>
+            <Container height="10%" justify="center" padding="40px">
+              <Text>Software Developer</Text>
+            </Container>
+            <Container justify="center" direction="column" height="40%" margin="40px">
+              <Icon src={Developer} />
+              <Text>Student Name: Student Name</Text>
+              <Text>Salary: $75,000 </Text>
+              <Text>Expenses: </Text>
+            </Container>
+          </Card>
         </Container>
-        
+
       </Container>
     </Container>
   )
