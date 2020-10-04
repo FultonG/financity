@@ -107,7 +107,7 @@ router.post("/complete_question", async (req, res) => {
 
   const { err: findOneErr, findOneRes } = await student.findOne(
     { username },
-    { _id: 0, questions_solved: 1, account: 1 }
+    { _id: 0, __v: 0 }
   );
   if (findOneErr) {
     const { statusCode, msg } = general.getStatus(findOneErr);
