@@ -12,6 +12,7 @@ import Search from '../../images/search.svg';
 import API from './utils/API';
 import Button from '../../Components/Button';
 import {useHistory} from 'react-router-dom';
+import Assets from '../../images/assets.svg';
 
 const Icon = styled.img`
   height: 100%;
@@ -26,17 +27,26 @@ const Row = styled(Container)`
 
 const StudentDashboard = ({ user }) => {
   let history = useHistory();
-  const [userInformation, setUserInformation] = useState(user.user);
+  const [userInformation, setUserInformation] = useState(user);
   useEffect(() => {
     const fetcUserInformation = async () => {
-      let res = await API.getUserInformation(user.user.username);
-      console.log(res.data);
+      try {
+        let res = await API.getUserInformation(user.username);
       setUserInformation(res.data);
+      } catch (e) {
+        console.log(e.message);
+      }
 
     }
 
     fetcUserInformation()
   }, [])
+
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0
+  });
 
   const handleRedirect = () => {
     history.push('/careers');
@@ -54,7 +64,7 @@ const StudentDashboard = ({ user }) => {
                   <Text>Cash:</Text>
                 </Row>
                 <Container width="40%" justify="center" align="center">
-                  <Text>${userInformation.account?.balance}</Text>
+                  <Text>{formatter.format(userInformation.account?.balance)}</Text>
                 </Container>
               </Container>
               <Container height="20%" margin="10px 0px">
@@ -90,7 +100,7 @@ const StudentDashboard = ({ user }) => {
           </Container>
           <Container padding="40px">
             <Card hover>
-
+              <img style={{width: '80%'}} src={Assets}></img>
             </Card>
           </Container>
         </Container>

@@ -24,7 +24,7 @@ const Careers = ({ user }) => {
 
   const handleSetCareer = async (val) => {
     try {
-      await API.setCareer({ job_id: val, username: user.user.username })
+      await API.setCareer({ job_id: val, username: user.username })
       setSuccess(true)
     } catch (e) {
       console.log(e.message)
