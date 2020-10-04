@@ -1,17 +1,33 @@
 import React from 'react';
 import Container from '../../Components/Container';
 import Card from '../../Components/Card';
-import { Bold, Text, Title, Rectangle } from '../../Components/Text';
+import { Text, Title } from '../../Components/Text';
 import WalletVector from '../../images/wallet.svg';
 import DebtVector from '../../images/debt.svg';
 import ProfitVector from '../../images/profits.svg';
 import styled from 'styled-components';
 import CashVector from '../../images/Cash.svg';
 import Developer from '../../images/Developer.svg';
+import CareerCard from './Components/CareerCard';
 
 const Icon = styled.img`
-  height: 100%
+  height: 100%;
+  margin-right: 20px;
 `;
+
+const Row = styled(Container)`
+  border-right: 2px solid #8ED275;
+  width: 60%;
+`;
+
+const career = {
+  img: 'https://fultongarcia.com/Developer.svg',
+  title: 'Software Engineer',
+  description: 'Software engineering is a field of engineering, for designing and writing programs for computers or other electronic devices. A software engineer, or programmer, writes software (or changes existing software) and compiles software using methods that improve it. Better quality software is easier to use.',
+  minSalary: 70000,
+  maxSalary: 80000,
+  role: "entry"
+}
 
 const StudentDashboard = () => {
   return (
@@ -21,30 +37,38 @@ const StudentDashboard = () => {
         <Container width="60%" direction="column">
           <Container height="40%" justify="space-between" padding="40px">
             <Card width="45%" direction="column" align="start" padding="15px" hover>
-              <Container height="33%" width="40%" align="baseline">
-                <Icon src={WalletVector} />
-                <Text>Cash:</Text>
+              <Container height="20%" margin="10px 0px">
+                <Row align="center">
+                  <Icon src={WalletVector} />
+                  <Text>Cash:</Text>
+                </Row>
+                <Container width="40%" justify="center" align="center">
+                  <Text>
+                    $500
+              </Text>
+                </Container>
               </Container>
-              <Container height="33%" width="40%" align="baseline">
-                <Icon src={DebtVector} />
-                <Text>Debt:</Text>
-                
+              <Container height="20%" margin="10px 0px">
+                <Row align="center">
+                  <Icon src={DebtVector} />
+                  <Text>Debt:</Text>
+                </Row>
+                <Container width="40%" justify="center" align="center">
+                  <Text>
+                    $25
+              </Text>
+                </Container>
               </Container>
-              <Container height="33%" width="40%" align="baseline">
-                <Icon src={ProfitVector} />
-                <Text>Investments:</Text>
-              </Container>
-
-              <Container height="33%" width="10%" align="baseline" padding="30px" direction="row" margin-bottom="10px" border-right="2px solid #8ED275d" > 
-                <Text>$500</Text>
-              </Container>
-
-              <Container height="33%" width="10%" align="baseline" padding="30px" direction="row" margin-bottom="10px"> 
-                <Text>$50</Text>
-              </Container>
-
-              <Container height="33%" width="10%" align="baseline" padding="30px" direction="row" margin-bottom="10px"> 
-                <Text>$25</Text>
+              <Container height="20%" margin="10px 0px">
+                <Row align="center">
+                  <Icon src={ProfitVector} />
+                  <Text>Investments:</Text>
+                </Row>
+                <Container width="40%" justify="center" align="center">
+                  <Text>
+                    $50
+              </Text>
+                </Container>
               </Container>
 
             </Card>
@@ -57,24 +81,13 @@ const StudentDashboard = () => {
           </Container>
           <Container padding="40px">
             <Card hover>
-              
+
             </Card>
           </Container>
         </Container>
-        <Container padding="40px" width="40%">
-        <Card direction="row" align="start" hover>
-          <Container height="10%" justify="center" padding="40px">
-            <Text>Software Developer</Text>
-          </Container>
-          <Container justify="center" direction="column" height="40%" margin="40px">
-            <Icon src={Developer} />
-            <Text>Student Name: Student Name</Text>
-            <Text>Salary: $75,000 </Text>
-            <Text>Expenses: </Text>
-          </Container>
-        </Card>
+        <Container width="40%" padding="40px">
+          <CareerCard {...career} ></CareerCard>
         </Container>
-        
       </Container>
     </Container>
   )
