@@ -29,7 +29,7 @@ const StudentDashboard = ({ user }) => {
   let history = useHistory();
   const [userInformation, setUserInformation] = useState(user);
   useEffect(() => {
-    const fetcUserInformation = async () => {
+    const fetchUserInformation = async () => {
       try {
         let res = await API.getUserInformation(user.username);
       setUserInformation(res.data);
@@ -39,7 +39,7 @@ const StudentDashboard = ({ user }) => {
 
     }
 
-    fetcUserInformation()
+    fetchUserInformation()
   }, [])
 
   var formatter = new Intl.NumberFormat('en-US', {

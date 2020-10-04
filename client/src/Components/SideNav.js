@@ -57,7 +57,7 @@ const SideNav = ({ logo, navItems }) => {
       <Brand src={logo}></Brand>
       <Nav>
         {navItems.map((item, index) => (
-          <StyledNavLink to={item.link} exact activeClassName="active" 
+          <StyledNavLink key={index} to={item.link} exact activeClassName="active" 
           onMouseEnter={() => setHoveredIndex(index)} 
           onMouseLeave={() => setHoveredIndex(null)}>
             <IconContainer>{React.cloneElement(item.icon, { hovered: hoveredIndex == index })}</IconContainer>{item.text}

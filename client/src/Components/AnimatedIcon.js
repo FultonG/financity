@@ -1,27 +1,38 @@
 
 import React, { useEffect, useState } from 'react';
 import ReactVivus from 'react-vivus';
+import styled from 'styled-components';
 
-const AnimatedIcon = ({ file, id, duration, hovered }) => {
+const Icon = styled(ReactVivus)(({ show=true }) => `
+  opacity: ${show ? '1' : '0'};
+`)
+const AnimatedIcon = ({ file, id, duration=300, hovered, show, backwards}) => {
   const [vivus, setVivus] = useState(null);
   const [finished, setFinished] = useState(false);
 
   useEffect(() => {
+    console.log(show)
     if (hovered && vivus !== null && finished) {
-      vivus.stop().reset().play(1);
+      vivus.stop().reset().play(backwards ? -1 : 1);
       setFinished(false);
     }
 
-  }, [hovered, finished]);
+    return function cleanup() {
+      // if(vivus)
+      //   vivus.stop().destroy();
+      // setVivus(null);
+    }
+  }, [hovered, show, finished]);
 
   return (
-    <ReactVivus
+    <Icon
+      show={show}
       id={id}
       option={{
         file: file,
         animTimingFunction: 'EASE_OUT',
         type: 'oneByOne',
-        duration: 300,
+        duration: duration,
         onReady: function (v) {
           setVivus(v);
         }

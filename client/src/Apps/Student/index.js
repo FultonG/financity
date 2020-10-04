@@ -7,11 +7,13 @@ import StudentDashboard from './Dashboard';
 import componentsIcon from '../../icons/components.svg';
 import folderIcon from '../../icons/folder.svg';
 import settingsIcon from '../../icons/settings.svg';
+import questionsIcon from '../../icons/question.svg';
 import house from '../../icons/house.svg';
 import AnimatedIcon from '../../Components/AnimatedIcon'
 import Careers from './Careers';
 import RealEstate from './RealEstate';
 
+import Questions from './Questions';
 const StudentApp = (props) => {
   return (
     <Router>
@@ -27,6 +29,9 @@ const StudentApp = (props) => {
             </Route>
             <Route exact path="/real_estate">
               <RealEstate {...props} />
+            </Route>
+            <Route exact path="/questions">
+              <Questions {...props}/>
             </Route>
             <Route >
               <Redirect to="/" />
@@ -53,6 +58,11 @@ const NavItems = [
     text: 'Real Estate',
     link: '/real_estate',
     icon: <AnimatedIcon file={house} id="real-estate-link" duration={300} />
+  },
+  {
+    text: 'Questions',
+    link: '/questions',
+    icon: <AnimatedIcon file={questionsIcon} id="questions-link" duration={300} />
   },
   {
     text: 'Settings',
