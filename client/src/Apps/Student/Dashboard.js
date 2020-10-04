@@ -44,6 +44,11 @@ const StudentDashboard = ({ user }) => {
     const fetchUserInformation = async () => {
       try {
         let res = await API.getUserInformation(user.username);
+        let temp = 0;
+        res.data.securities.forEach(obj => {
+          temp += obj.amountInvested;
+        });
+        res.data.investments = temp;
         setUserInformation(res.data);
       } catch (e) {
         console.log(e.message);
@@ -97,7 +102,7 @@ const StudentDashboard = ({ user }) => {
                 </Row>
                 <Container width="40%" justify="center" align="center">
                   <Text>
-                    $50
+                    ${userInformation.investments || '0'}
               </Text>
                 </Container>
               </Container>
