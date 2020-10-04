@@ -5,6 +5,7 @@ import Input from '../../Components/Input';
 import Button from '../../Components/Button';
 import { Bold, Text } from '../../Components/Text';
 import LearningVector from '../../images/signup.svg'
+import API from './utils/API';
 
 const initialSignup = {
   first_name: '',
@@ -32,13 +33,22 @@ const Signup = () => {
     return setData(old => ({ ...old, [attr]: val }));
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitted(true);
-    if (type === 'student') {
-      const { customer, ...obj } = data;
-    } else {
-      const { classroom_id, ...obj } = data;
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setSubmitted(true);
+      if (type === 'student') {
+        const { customer, ...obj } = data;
+        let res = await API.signup('student', obj);
+        console.log(res);
+      } else {
+        const { classroom_id, ...obj } = data;
+        let res = await API.signup('teacher', obj);
+        console.log(res);
+      }
+    } catch (e) {
+      console.log(e.message);
+      setSubmitted(false);
     }
   }
 
