@@ -14,7 +14,7 @@ function App() {
       <StudentApp/>
     )}
     {user === null && (
-      <UnauthorizedApp/>
+      <UnauthorizedApp setUser={setUser}/>
     )}
     </>
   );

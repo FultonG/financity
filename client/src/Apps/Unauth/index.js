@@ -11,7 +11,7 @@ import Upload from '../../icons/upload.svg';
 
 import AnimatedIcon from "../../Components/AnimatedIcon";
 
-const UnauthorizedApp = () => {
+const UnauthorizedApp = (props) => {
  
   return (
     <Router>
@@ -23,10 +23,10 @@ const UnauthorizedApp = () => {
             <Redirect to="/login"/>
           </Route>
           <Route exact path="/signup">
-            <Signup />
+            <Signup {...props}/>
           </Route>
           <Route exact path="/login">
-            <Login/>
+            <Login {...props}/>
           </Route>
         </Switch>
         </Container>
