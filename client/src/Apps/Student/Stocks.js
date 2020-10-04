@@ -13,6 +13,7 @@ import StockChart from "./Components/StockChart";
 const Stocks = ({ user }) => {
   const [stocks, setStocks] = useState([]);
   const [success, setSuccess] = useState(false);
+  const [currentTicker, setCurrentTicker] = useState(null);
   let history = useHistory();
 
   var formatter = new Intl.NumberFormat("en-US", {
@@ -52,8 +53,9 @@ const Stocks = ({ user }) => {
 
   const handlePurchase = async (ticker, shares) => {
     try {
-      let res = await API.buyStock({ username: user.username, ticker, shares });
-      console.log(res.data);
+      await API.buyStock({ username: user.username, ticker, shares });
+      let res = await API.getStockDetails(ticker);
+      setCurrentTicker(res.data)
       setSuccess(true);
     } catch (e) {
       console.log(e.message);
@@ -72,7 +74,6 @@ const Stocks = ({ user }) => {
 
         return { time: dateFormat, value: parseFloat(h.close) };
       });
-      console.log(historicalData);
       cards.push(
         <Card
           justify="flex-start"
@@ -80,8 +81,6 @@ const Stocks = ({ user }) => {
           hover
           cursor="pointer"
         >
-          {/* <img style={{ width: '20%', marginRight: '20px' }} src={property.thumbnail}></img> */}
-          {/* <div style={{ width: '20%', marginRight: '20px' }}>graph</div> */}
           <StockChart data={historicalData} style={{ padding: "15px" }} />
           <Container
             width="50%"
@@ -90,14 +89,11 @@ const Stocks = ({ user }) => {
             padding="20px"
             justify="space-between"
           >
-            {/* <Description>Beds: {property.beds} Baths: {property.baths} </Description>
-              <Description>{property.address.line} {property.address.city} {property.address.postal_code}</Description>
-              <Text>Price: {formatter.format(property.price)}</Text> */}
             <h3>
               {stock.symbol} - {stock.name}
             </h3>
-            <Button onClick={() => handlePurchase(stock.symbol)}>
-              Buy now!
+            <Button onClick={() => handlePurchase(stock.symbol, 5)}>
+              Details
             </Button>
           </Container>
         </Card>
@@ -115,14 +111,26 @@ const Stocks = ({ user }) => {
       </Container>
       <Modal show={success}>
         <Card
-          height="60%"
-          width="50%"
+          height="30%"
+          width="30%"
+          minHeight="30%"
           direction="column"
-          justify="space-evenly"
+          justify="center"
+          align="flex-start"
+          padding="20px"
         >
-          <img src={Check} />
-          <Text>Home Purchased!</Text>
-          <Button onClick={() => history.push("/")}>Go to Dashboard</Button>
+          <Text>Name: {currentTicker?.name}</Text>
+          <Text>Symbol: {currentTicker?.symbol}</Text>
+          <Text>Open: {formatter.format(currentTicker?.open)}</Text>
+          <Text>Previous Close: {formatter.format(currentTicker?.previousClose)}</Text>
+          <Text>Today's Low: {formatter.format(currentTicker?.daysLow)}</Text>
+          <Text>Today's High: {formatter.format(currentTicker?.daysHigh)}</Text>
+          <Text>Symbol: {currentTicker?.symbol}</Text>
+          <Text>Volume: {currentTicker?.volume}</Text>
+          <Text>Market Cap: {formatter.format(currentTicker?.marketCap)}</Text>
+          <Container height="auto" margin="10px 0px 0px 0px">
+          <Button onClick={() => history.push("/")}>Purchase</Button>
+          </Container>
         </Card>
       </Modal>
     </>

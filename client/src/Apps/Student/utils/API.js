@@ -10,7 +10,8 @@ const API = {
   submitAnswer: (data) => axios.post('/student/complete_question', data),
   getStocks: () => axios.get('/stock/default'),
   buyStock: (data) => axios.post('/student/buy_stock', data),
-  getStockHistoricalData: (symbol, fromDate, toDate) => axios.get(`stock/history/${symbol}/${fromDate}/${toDate}`)
+  getStockHistoricalData: (symbol, fromDate, toDate) => axios.get(`stock/history/${symbol}/${fromDate}/${toDate}`),
+  getStockDetails: (ticker) => axios.get(`/stock/info/${ticker}`)
 }
 
 export default API;
