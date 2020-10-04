@@ -105,7 +105,7 @@ const StudentDashboard = ({ user }) => {
             </Card>
             <Card width="45%" direction="row" align="start" padding="40px" hover>
               <Text>Your Current Investments</Text>
-              <Container height="70%" justify="center">
+              <Container height="70%" justify="center" wrap="wrap">
                 {userInformation.securities.map(obj => (
                   <Ticker>{obj.ticker}</Ticker>
                 ))}
