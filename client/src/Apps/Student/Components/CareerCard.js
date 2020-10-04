@@ -13,6 +13,7 @@ const Description = styled(Text)`
   text-align: left;
   width: 80%;
 `;
+
 const CareerCard = ({ img, width, title, description, minSalary, maxSalary, role }) => {
   var formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',

@@ -45,13 +45,13 @@ const Signup = ({setUser}) => {
         const { customer, ...obj } = formdata;
         let {data} = await API.signup('student', obj);
         setResponse({...data, role: 'student'})
-        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('user', JSON.stringify({...data, role: 'student'}));
         setSuccess(true);
       } else {
         const { classroom_id, ...obj } = formdata;
         let {data} = await API.signup('teacher', obj);
         setResponse({...data, role: 'teacher'})
-        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('user', JSON.stringify({...data, role: 'teacher'}));
         setSuccess(true);
       }
     } catch (e) {

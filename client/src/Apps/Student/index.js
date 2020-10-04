@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Container from '../../Components/Container';
 import SideNav from '../../Components/SideNav'
 import Logo from '../../images/logo.svg';
@@ -24,6 +24,9 @@ const StudentApp = () => {
             <Route exact path="/careers">
               <Careers />
             </Route>
+            <Route >
+              <Redirect to="/" />
+            </Route>
           </Switch>
         </Container>
       </Container>
@@ -40,17 +43,12 @@ const NavItems = [
   {
     text: 'Careers',
     link: '/careers',
-    icon: <AnimatedIcon file={folderIcon} id="careers-link" duration={300}/>
-  },
-  {
-    text: 'Analytics',
-    link: '/analytics',
-    icon: <AnimatedIcon file={analyticsIcon} id="analytics-link" duration={300}/>
+    icon: <AnimatedIcon file={folderIcon} id="careers-link" duration={300} />
   },
   {
     text: 'Settings',
     link: '/settings',
-    icon: <AnimatedIcon file={settingsIcon} id="settings-link" duration={300}/>
+    icon: <AnimatedIcon file={settingsIcon} id="settings-link" duration={300} />
   }
 ]
 export default StudentApp;
