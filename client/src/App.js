@@ -4,7 +4,7 @@ import StudentApp from './Apps/Student';
 import UnauthorizedApp from './Apps/Unauth';
 
 function App() {
-  const [user, setUser] = useState({role: 'student'});
+  const [user, setUser] = useState({role: 'teacher'});
   return (
     <>
     {user && user.role === 'teacher' && (

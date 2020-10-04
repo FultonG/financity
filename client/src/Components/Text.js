@@ -6,19 +6,20 @@ export const Bold = styled.p`
   font-size: 20px;
 `;
 
-export const Text = styled.p`
-font-weight: 500;
-font-size: 18px;
-line-height: 22px;
+export const Text = styled.p(({lineheight='22px', size='18px', weight='500', color='#011F3B'}) =>`
+font-weight: ${weight};
+font-size: ${size};
+line-height: ${lineheight};
 text-align: center;
-
-color: #011F3B;
+color: ${color};
   margin: 0;
-`;
+`);
 
-export const Title = styled.p`
-font-weight: 600;
-font-size: 28px;
+export const Title = styled.p(({justify='flex-start', size='28px', padding='0px', weight='600'}) =>`
+font-weight: ${weight};
+font-size: ${size};
 color: #011F3B;
-
-`;
+display: flex;
+justify-content: ${justify};
+padding: ${padding};
+`);
