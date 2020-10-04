@@ -11,7 +11,7 @@ import CareerCard from './Components/CareerCard';
 import Search from '../../images/search.svg';
 import API from './utils/API';
 import Button from '../../Components/Button';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Assets from '../../images/assets.svg';
 
 const Icon = styled.img`
@@ -24,6 +24,18 @@ const Row = styled(Container)`
   width: 60%;
 `;
 
+const Ticker = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #003362;
+  color: white;
+  height: 25px;
+  width: 80px;
+  margin: 10px;
+  border-radius: 10px;
+`;
+
 
 const StudentDashboard = ({ user }) => {
   let history = useHistory();
@@ -32,7 +44,7 @@ const StudentDashboard = ({ user }) => {
     const fetchUserInformation = async () => {
       try {
         let res = await API.getUserInformation(user.username);
-      setUserInformation(res.data);
+        setUserInformation(res.data);
       } catch (e) {
         console.log(e.message);
       }
@@ -92,15 +104,17 @@ const StudentDashboard = ({ user }) => {
 
             </Card>
             <Card width="45%" direction="row" align="start" padding="40px" hover>
+              <Text>Your Current Investments</Text>
               <Container height="70%" justify="center">
-                <Icon src={CashVector} />
+                {userInformation.securities.map(obj => (
+                  <Ticker>{obj.ticker}</Ticker>
+                ))}
               </Container>
-              <Text>You are currently ranked #1 out of 20 students!</Text>
             </Card>
           </Container>
           <Container padding="40px">
             <Card hover>
-              <img style={{width: '80%'}} src={Assets}></img>
+              <img style={{ width: '80%' }} src={Assets}></img>
             </Card>
           </Container>
         </Container>
@@ -108,7 +122,7 @@ const StudentDashboard = ({ user }) => {
           {userInformation.job ? <CareerCard {...userInformation.job} ></CareerCard> : (
             <Card direction="column" align="center" justify="space-evenly" hover>
               <Text>Hey!</Text>
-              <img style={{width: '80%'}} src={Search} />
+              <img style={{ width: '80%' }} src={Search} />
               <Description>Looks like you don't have a career yet, head over to the 'Careers' tab to learn more about some awesome jobs and choose the right fit for you.</Description>
               <Button onClick={handleRedirect}>Go to Careers</Button>
             </Card>
