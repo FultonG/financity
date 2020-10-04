@@ -26,15 +26,15 @@ const initialSignup = {
 
 const Signup = ({setUser}) => {
   const [type, setType] = useState('student');
-  const [data, setData] = useState(initialSignup);
+  const [formdata, setFormdata] = useState(initialSignup);
   const [submitted, setSubmitted] = useState(false);
   const [success, setSuccess] = useState(false);
   const [response, setResponse] = useState(null);
   const handleChange = (val, attr, inner = false) => {
     if (inner) {
-      return setData(old => ({ ...old, customer: { ...old.customer, [attr]: val } }));
+      return setFormdata(old => ({ ...old, customer: { ...old.customer, [attr]: val } }));
     }
-    return setData(old => ({ ...old, [attr]: val }));
+    return setFormdata(old => ({ ...old, [attr]: val }));
   }
 
   const handleSubmit = async (e) => {
@@ -42,21 +42,21 @@ const Signup = ({setUser}) => {
       e.preventDefault();
       setSubmitted(true);
       if (type === 'student') {
-        const { customer, ...obj } = data;
-        let res = await API.signup('student', obj);
-        setResponse({...res, role: 'student'})
-        localStorage.setItem('user', res);
+        const { customer, ...obj } = formdata;
+        let {data} = await API.signup('student', obj);
+        setResponse({...data, role: 'student'})
+        localStorage.setItem('user', JSON.stringify(data));
         setSuccess(true);
       } else {
-        const { classroom_id, ...obj } = data;
-        let res = await API.signup('teacher', obj);
-        setResponse({...res, role: 'teacher'})
-        localStorage.setItem('user', res);
+        const { classroom_id, ...obj } = formdata;
+        let {data} = await API.signup('teacher', obj);
+        setResponse({...data, role: 'teacher'})
+        localStorage.setItem('user', JSON.stringify(data));
         setSuccess(true);
       }
     } catch (e) {
       console.log(e.message);
-      setData(initialSignup);
+      setFormdata(initialSignup);
       setSubmitted(false);
     }
   }
@@ -78,21 +78,21 @@ const Signup = ({setUser}) => {
                 <option value="teacher">Teacher</option>
                 <option value="student">Student</option>
               </Input>
-              <Input placeholder="First Name" value={data.first_name} onChange={(e) => handleChange(e.currentTarget.value, 'first_name')}></Input>
-              <Input placeholder="Last Name" value={data.last_name} onChange={(e) => handleChange(e.currentTarget.value, 'last_name')}></Input>
-              <Input placeholder="Username" value={data.username} onChange={(e) => handleChange(e.currentTarget.value, 'username')}></Input>
-              <Input placeholder="Password" type="password" value={data.password} onChange={(e) => handleChange(e.currentTarget.value, 'password')}></Input>
+              <Input placeholder="First Name" value={formdata.first_name} onChange={(e) => handleChange(e.currentTarget.value, 'first_name')}></Input>
+              <Input placeholder="Last Name" value={formdata.last_name} onChange={(e) => handleChange(e.currentTarget.value, 'last_name')}></Input>
+              <Input placeholder="Username" value={formdata.username} onChange={(e) => handleChange(e.currentTarget.value, 'username')}></Input>
+              <Input placeholder="Password" type="password" value={formdata.password} onChange={(e) => handleChange(e.currentTarget.value, 'password')}></Input>
               {type === 'student' && (
-                <Input placeholder="Class Code" value={data.classroom_id} onChange={(e) => handleChange(e.currentTarget.value, 'classroom_id')} />
+                <Input placeholder="Class Code" value={formdata.classroom_id} onChange={(e) => handleChange(e.currentTarget.value, 'classroom_id')} />
               )}
 
               {type === 'teacher' && (
                 <>
-                  <Input placeholder="City" value={data.customer.city} onChange={(e) => handleChange(e.currentTarget.value, 'city', true)}></Input>
-                  <Input placeholder="Street name" value={data.customer.street_name} onChange={(e) => handleChange(e.currentTarget.value, 'street_name', true)}></Input>
-                  <Input placeholder="Street number" value={data.customer.street_number} onChange={(e) => handleChange(e.currentTarget.value, 'street_number', true)}></Input>
-                  <Input placeholder="State" value={data.customer.state} onChange={(e) => handleChange(e.currentTarget.value, 'state', true)}></Input>
-                  <Input placeholder="Zip" value={data.customer.zip} onChange={(e) => handleChange(e.currentTarget.value, 'zip', true)}></Input>
+                  <Input placeholder="City" value={formdata.customer.city} onChange={(e) => handleChange(e.currentTarget.value, 'city', true)}></Input>
+                  <Input placeholder="Street name" value={formdata.customer.street_name} onChange={(e) => handleChange(e.currentTarget.value, 'street_name', true)}></Input>
+                  <Input placeholder="Street number" value={formdata.customer.street_number} onChange={(e) => handleChange(e.currentTarget.value, 'street_number', true)}></Input>
+                  <Input placeholder="State" value={formdata.customer.state} onChange={(e) => handleChange(e.currentTarget.value, 'state', true)}></Input>
+                  <Input placeholder="Zip" value={formdata.customer.zip} onChange={(e) => handleChange(e.currentTarget.value, 'zip', true)}></Input>
                 </>
               )}
               <Button type="submit" disabled={submitted}>Sign Up</Button>
