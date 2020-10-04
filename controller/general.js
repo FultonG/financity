@@ -34,6 +34,8 @@ function getStatus(err) {
     return { statusCode: 400, msg: err.message };
   } else if (err.message == "Username not in database") {
     return { statusCode: 400, msg: err.message };
+  } else if (err.message == "Invalid property id") {
+    return { statusCode: 400, msg: err.message };
   }
   return { statusCode: 500, msg: err.message };
 }
