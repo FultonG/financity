@@ -6,7 +6,7 @@ export const Bold = styled.p`
   font-size: 20px;
 `;
 
-export const Text = styled.p(({lineheight='22px', size='18px', weight='500', color='#011F3B'}) =>`
+export const Text = styled.p(({ lineheight = '22px', size = '18px', weight = '500', color = '#011F3B' }) => `
 font-weight: ${weight};
 font-size: ${size};
 line-height: ${lineheight};
@@ -15,7 +15,7 @@ color: ${color};
   margin: 0;
 `);
 
-export const Title = styled.p(({justify='flex-start', size='28px', padding='0px', weight='600'}) =>`
+export const Title = styled.p(({ justify = 'flex-start', size = '28px', padding = '0px', weight = '600' }) => `
 font-weight: ${weight};
 font-size: ${size};
 color: #011F3B;
