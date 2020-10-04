@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from '../../Components/Container';
 import Card from '../../Components/Card';
-import {Text, Title } from '../../Components/Text';
+import { Text, Title } from '../../Components/Text';
 import WalletVector from '../../images/wallet.svg';
 import DebtVector from '../../images/debt.svg';
 import ProfitVector from '../../images/profits.svg';
@@ -19,6 +19,15 @@ const Row = styled(Container)`
   border-right: 2px solid #8ED275;
   width: 60%;
 `;
+
+const career = {
+  img: 'https://fultongarcia.com/Developer.svg',
+  title: 'Software Engineer',
+  description: 'Software engineering is a field of engineering, for designing and writing programs for computers or other electronic devices. A software engineer, or programmer, writes software (or changes existing software) and compiles software using methods that improve it. Better quality software is easier to use.',
+  minSalary: 70000,
+  maxSalary: 80000,
+  role: "entry"
+}
 
 const StudentDashboard = () => {
   return (
@@ -77,7 +86,7 @@ const StudentDashboard = () => {
           </Container>
         </Container>
         <Container width="40%" padding="40px">
-        <CareerCard img={Developer}></CareerCard>
+          <CareerCard {...career} ></CareerCard>
         </Container>
       </Container>
     </Container>
