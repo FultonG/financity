@@ -238,6 +238,41 @@ router.get("/new_job/:username", async (req, res) => {
   return res.send(updateRes);
 });
 
+router.post("/pay_event", async (req, res) => {
+  const username = req.body.username;
+  const amount = req.body.amount;
+
+  const { err, findOneRes } = await student.findOne(
+    { username },
+    { _id: 0, __v: 0 }
+  );
+  if (err) {
+    const { statusCode, msg } = general.getStatus(err);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { purchaseErr } = await finance.purchase({
+    account_id: findOneRes.account._id,
+    medium: "balance",
+    amount,
+  });
+  if (purchaseErr) {
+    const { statusCode, msg } = general.getStatus(purchaseErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { updateErr, updateRes } = await student.updateOne(
+    { username },
+    { event: {} }
+  );
+  if (updateErr) {
+    const { statusCode, msg } = general.getStatus(updateErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  return res.send(updateRes);
+});
+
 router.post("/buy_house", async (req, res) => {
   const username = req.body.username;
   const property_id = req.body.property_id;
