@@ -1,6 +1,12 @@
-const { student, general, question } = require("../controller");
+const {
+  student,
+  general,
+  question,
+  job,
+  finance,
+  realtor,
+} = require("../controller");
 const router = require("express").Router();
-const { finance } = require("../controller");
 
 router.get("/get/:username", async (req, res) => {
   const username = req.params.username;
@@ -132,6 +138,7 @@ router.post("/complete_question", async (req, res) => {
           date_completed: new Date(),
         },
       },
+      $inc: { solved: 1 },
     }
   );
   if (updateErr) {
@@ -155,19 +162,72 @@ router.post("/complete_question", async (req, res) => {
   return res.send(user);
 });
 
-router.get("/new_goal/:username/:goal", async (req, res) => {
+router.get("/new_job/:username", async (req, res) => {
   const username = req.params.username;
-  const currGoal = req.params.goal;
+
+  const { err, findOneRes } = await student.findOne(
+    { username },
+    { _id: 0, __v: 0 }
+  );
+  if (err) {
+    const { statusCode, msg } = general.getStatus(err);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { goal: currGoal, solved } = findOneRes;
+
+  if (solved < currGoal) {
+    return res
+      .status(400)
+      .send({ msg: "You have not solved enough questions" });
+  }
 
   const minGoal = Math.floor(currGoal * 1.25);
   const maxGoal = Math.floor(currGoal * 2);
 
   const newGoal = Math.floor(Math.random() * (maxGoal - minGoal + 1) + minGoal);
-  console.log(minGoal, maxGoal, newGoal);
+
+  const { _id: oldJobId } = findOneRes.job;
+  const { err: jobErr, findByIdRes: jobRes } = await job.findById({
+    _id: oldJobId,
+  });
+  if (jobErr) {
+    const { statusCode, msg } = general.getStatus(jobErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { balance, _id: account_id } = findOneRes.account;
+  const { cost, next: nextJobId } = jobRes;
+
+  if (cost > balance) {
+    return res.status(400).send({ msg: "Insufficient fund" });
+  }
+
+  const { purchaseErr, purchaseRes } = await finance.purchase({
+    account_id,
+    medium: "balance",
+    amount: cost,
+  });
+  if (purchaseErr) {
+    const { statusCode, msg } = general.getStatus(purchaseErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  const { err: nextJobErr, findByIdRes: nextJobRes } = await job.findById({
+    _id: nextJobId,
+  });
+  if (nextJobErr) {
+    const { statusCode, msg } = general.getStatus(nextJobErr);
+    return res.status(statusCode).send({ msg });
+  }
 
   const { updateErr, updateRes } = await student.updateOne(
     { username },
-    { goal: newGoal }
+    {
+      job: nextJobRes,
+      solved: 0,
+      goal: newGoal,
+    }
   );
   if (updateErr) {
     const { statusCode, msg } = general.getStatus(updateErr);
@@ -175,6 +235,18 @@ router.get("/new_goal/:username/:goal", async (req, res) => {
   }
 
   return res.send(updateRes);
+});
+
+router.post("/buy_house", async (req, res) => {
+  const property_id = req.body.property_id;
+
+  const { houseErr, houseRes } = await realtor.getHouse(property_id);
+  if (houseErr) {
+    const { statusCode, msg } = general.getStatus(houseErr);
+    return res.status(statusCode).send({ msg });
+  }
+
+  return res.send(houseRes);
 });
 
 module.exports = router;

@@ -33,6 +33,7 @@ const StudentSchema = mongoose.Schema({
   question: { type: String, required: false },
   goal: { type: Number, default: 5, required: false },
   account: { type: Object, required: false },
+  house: { type: String, required: false },
 });
 
 const Student = (module.exports = mongoose.model(
