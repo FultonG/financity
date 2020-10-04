@@ -17,7 +17,7 @@ const StudentApp = () => {
         <SideNav logo={Logo} navItems={NavItems}></SideNav>
         <Container width="85%">
           <Switch>
-            <Route exact path="/Student">
+            <Route exact path="/">
               <StudentDashboard />
             </Route>
           </Switch>
