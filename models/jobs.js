@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const JobsSchema = mongoose.Schema({
   title: { type: String, required: [true, "Please provide a job title"] },
+  image: { type: String, required: false },
   description: {
     type: String,
     required: [true, "Please provide a job description"],
@@ -17,6 +18,8 @@ const JobsSchema = mongoose.Schema({
     type: String,
     required: [true, "Please provide a description for leveling up"],
   },
+  minSalary: { type: Number, required: false },
+  maxSalary: { type: Number, required: false },
 });
 
 const Job = (module.exports = {

@@ -75,14 +75,14 @@ async function create(data) {
 async function findOne(data, filter) {
   let res = {};
   try {
-    let findOneRes = await Student.findOne(data).select(filter);
+    let findOneRes = await Student.findOne(data).select({ filter });
     if (!findOneRes) {
       throw new Error("Username not in database");
     }
     findOneRes = findOneRes.toObject();
 
-    const { _id: account_id } = findOneRes.account;
-    const { accountErr, accountRes } = await finance.getAccount(account_id);
+    const { _id } = findOneRes.account;
+    const { accountErr, accountRes } = await finance.getAccount(_id);
     if (accountErr) {
       throw accountErr;
     }

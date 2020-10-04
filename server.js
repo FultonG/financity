@@ -14,6 +14,7 @@ const {
   class_,
   job,
   question,
+  stock,
 } = require("./routes");
 const db = require("./db/db");
 
@@ -39,6 +40,7 @@ app.use("/realtor", realtor);
 app.use("/class", class_);
 app.use("/job", job);
 app.use("/question", question);
+app.use("/stock", stock);
 
 app.get("/", (req, res) => {
   res.send({ msg: "Default endpoint" });

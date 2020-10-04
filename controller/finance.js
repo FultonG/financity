@@ -43,7 +43,6 @@ async function purchase(data) {
       purchase
     )
     .then((res) => {
-      console.log(res.data);
       return {
         purchaseErr: null,
         purchaseRes: res.data.objectCreated,

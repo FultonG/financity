@@ -33,7 +33,9 @@ const StudentSchema = mongoose.Schema({
   question: { type: String, required: false },
   goal: { type: Number, default: 5, required: false },
   account: { type: Object, required: false },
-  house: { type: String, required: false },
+  house: { type: Object, required: false },
+  expenses: { type: Number, required: false },
+  securities: { type: Array, required: false },
 });
 
 const Student = (module.exports = mongoose.model(

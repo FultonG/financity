@@ -4,6 +4,7 @@ const realtor = require("./realtor");
 const class_ = require("./class");
 const job = require("./job");
 const question = require("./question");
+const stock = require("./stock");
 
 const account = require("./finance/account");
 const deposit = require("./finance/deposit");
@@ -21,4 +22,5 @@ module.exports = {
   class_,
   job,
   question,
+  stock,
 };
