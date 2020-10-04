@@ -9,6 +9,7 @@ import folderIcon from '../../icons/folder.svg';
 import analyticsIcon from '../../icons/analytics.svg';
 import settingsIcon from '../../icons/settings.svg';
 import AnimatedIcon from '../../Components/AnimatedIcon'
+import Careers from './Careers';
 
 const StudentApp = () => {
   return (
@@ -19,6 +20,9 @@ const StudentApp = () => {
           <Switch>
             <Route exact path="/">
               <StudentDashboard />
+            </Route>
+            <Route exact path="/careers">
+              <Careers />
             </Route>
           </Switch>
         </Container>
@@ -34,9 +38,9 @@ const NavItems = [
     icon: <AnimatedIcon file={componentsIcon} id="components-link" duration={300} />
   },
   {
-    text: 'Classes',
-    link: '/classes',
-    icon: <AnimatedIcon file={folderIcon} id="classes-link" duration={300}/>
+    text: 'Careers',
+    link: '/careers',
+    icon: <AnimatedIcon file={folderIcon} id="careers-link" duration={300}/>
   },
   {
     text: 'Analytics',

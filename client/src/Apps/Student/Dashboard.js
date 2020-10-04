@@ -1,13 +1,14 @@
 import React from 'react';
 import Container from '../../Components/Container';
 import Card from '../../Components/Card';
-import { Bold, Text, Title, Rectangle } from '../../Components/Text';
+import {Text, Title } from '../../Components/Text';
 import WalletVector from '../../images/wallet.svg';
 import DebtVector from '../../images/debt.svg';
 import ProfitVector from '../../images/profits.svg';
 import styled from 'styled-components';
 import CashVector from '../../images/Cash.svg';
 import Developer from '../../images/Developer.svg';
+import CareerCard from './Components/CareerCard';
 
 const Icon = styled.img`
   height: 100%;
@@ -75,20 +76,9 @@ const StudentDashboard = () => {
             </Card>
           </Container>
         </Container>
-        <Container padding="40px" width="40%">
-          <Card direction="row" align="start" hover>
-            <Container height="10%" justify="center" padding="40px">
-              <Text>Software Developer</Text>
-            </Container>
-            <Container justify="center" direction="column" height="40%" margin="40px">
-              <Icon src={Developer} />
-              <Text>Student Name: Student Name</Text>
-              <Text>Salary: $75,000 </Text>
-              <Text>Expenses: </Text>
-            </Container>
-          </Card>
+        <Container width="40%" padding="40px">
+        <CareerCard img={Developer}></CareerCard>
         </Container>
-
       </Container>
     </Container>
   )
